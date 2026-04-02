@@ -74,7 +74,7 @@ def adminlogin():
     error = None
     if request.method == 'POST':
        if request.form['uname'] == 'admin' or request.form['password'] == 'admin':
-           conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+           conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
            cursor = conn.cursor()
            cur = conn.cursor()
            cur.execute("SELECT * FROM register")
@@ -107,7 +107,7 @@ def reg():
         zip = request.form['zip']
         uname = request.form['uname']
         password = request.form['psw']
-        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
             "INSERT INTO register VALUES ('','" + n + "','" + age + "','" + email + "','" + pnumber + "','" + zip + "','" + address + "','" + uname + "','" + password + "')")
@@ -133,7 +133,7 @@ def userlogin():
         password = request.form['password']
         session['uname'] = request.form['uname']
 
-        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
         cursor = conn.cursor()
         cursor.execute("SELECT * from register where uname='" + username + "' and psw='" + password + "'")
         data = cursor.fetchone()
@@ -143,7 +143,7 @@ def userlogin():
         else:
             print(data[0])
             session['uid'] = data[0]
-            conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+            conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
             # cursor = conn.cursor()
             cur = conn.cursor()
             cur.execute("SELECT * FROM register where uname='" + username + "' and psw='" + password + "'")
@@ -209,7 +209,7 @@ def newquery():
 
         # ✅ Store in DB (same as before)
         try:
-            conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+            conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
             cursor = conn.cursor()
 
             cursor.execute("""
@@ -249,7 +249,7 @@ def newquery():
             print("Database Insert Error:", e)
 
         # Fetch user data
-        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
         cur = conn.cursor()
         cur.execute("SELECT * FROM Querytb1 WHERE UserName=%s", (uname,))
         data = cur.fetchall()
@@ -260,13 +260,13 @@ def UQueryandAns():
 
     uname = session['uname']
 
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
     cur.execute("SELECT * FROM Querytb1 where UserName='" + uname + "'")
     data = cur.fetchall()
 
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
     cur.execute("SELECT * FROM Querytb1 where UserName='" + uname + "'")
@@ -280,7 +280,7 @@ def AdminQinfo():
 
     #uname = session['uname']
 
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
     cur.execute("SELECT * FROM Querytb1")
@@ -300,7 +300,7 @@ def AdminAinfo():
 
 
 
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
     cur.execute("SELECT * FROM Querytb1 where  DResult !='waiting'")
