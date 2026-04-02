@@ -72,28 +72,35 @@ def UploadDataset():
 @app.route("/adminlogin", methods=['GET', 'POST'])
 def adminlogin():
     error = None
+    if request.method == 'GET':
+        return redirect('/AdminLogin')
+    
     if request.method == 'POST':
-       if request.form['uname'] == 'admin' or request.form['password'] == 'admin':
-           conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-           cursor = conn.cursor()
-           cur = conn.cursor()
-           cur.execute("SELECT * FROM register")
-           data = cur.fetchall()
-           return render_template('AdminHome.html', data=data)
-
-       else:
-           return """
-           <!DOCTYPE html>
-           <html>
-           <head><title>Access Denied</title></head>
-           <body style="text-align: center; font-family: sans-serif; padding-top: 100px; background: #f3f4f6;">
-               <script>alert('only admin login only allowed !');</script>
-               <h2 style="color: #ef4444;">Access Denied</h2>
-               <p>only admin login only allowed ! Please verify your credentials and try again.</p>
-               <a href="/AdminLogin" style="display: inline-block; padding: 10px 20px; background: #4f46e5; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">Return to Admin Portal</a>
-           </body>
-           </html>
-           """
+       try:
+           if request.form['uname'] == 'admin' or request.form['password'] == 'admin':
+               conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 3306)), database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+               cursor = conn.cursor()
+               cur = conn.cursor()
+               cur.execute("SELECT * FROM register")
+               data = cur.fetchall()
+               return render_template('AdminHome.html', data=data)
+    
+           else:
+               return """
+               <!DOCTYPE html>
+               <html>
+               <head><title>Access Denied</title></head>
+               <body style="text-align: center; font-family: sans-serif; padding-top: 100px; background: #f3f4f6;">
+                   <script>alert('only admin login only allowed !');</script>
+                   <h2 style="color: #ef4444;">Access Denied</h2>
+                   <p>only admin login only allowed ! Please verify your credentials and try again.</p>
+                   <a href="/AdminLogin" style="display: inline-block; padding: 10px 20px; background: #4f46e5; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">Return to Admin Portal</a>
+               </body>
+               </html>
+               """
+       except Exception as e:
+           import traceback
+           return f"<h2>Backend Error</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
 
 @app.route("/reg", methods=['GET', 'POST'])
 def reg():
