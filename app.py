@@ -225,7 +225,7 @@ def newquery():
                 cursor = conn.cursor()
 
                 cursor.execute("""
-                    INSERT INTO Querytb1 
+                    INSERT INTO querytb1 
                     (UserName, Age, Sex, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG,
                     MaxHR, ExerciseAngina, Oldpeak, ST_Slope, HeartMRI, CTScan, Echocardiogram, ChestXray,
                     Smoking, Troponin, Angio_Blockage_Percent, Answer, Prescription)
@@ -265,7 +265,7 @@ def newquery():
             db_p2 = int(pstr2) if pstr2 else 26205
             conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=db_p2, connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
             cur = conn.cursor()
-            cur.execute("SELECT * FROM Querytb1 WHERE UserName=%s", (uname,))
+            cur.execute("SELECT * FROM querytb1 WHERE UserName=%s", (uname,))
             data = cur.fetchall()
 
             return render_template('UserQueryInfo.html', data=data)
@@ -281,13 +281,13 @@ def UQueryandAns():
     conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Querytb1 where UserName='" + uname + "'")
+    cur.execute("SELECT * FROM querytb1 where UserName='" + uname + "'")
     data = cur.fetchall()
 
     conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Querytb1 where UserName='" + uname + "'")
+    cur.execute("SELECT * FROM querytb1 where UserName='" + uname + "'")
     data1 = cur.fetchall()
 
 
@@ -301,7 +301,7 @@ def AdminQinfo():
     conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Querytb1")
+    cur.execute("SELECT * FROM querytb1")
     data = cur.fetchall()
 
 
@@ -321,7 +321,7 @@ def AdminAinfo():
     conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
     # cursor = conn.cursor()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Querytb1 where  DResult !='waiting'")
+    cur.execute("SELECT * FROM querytb1 where  DResult !='waiting'")
     data = cur.fetchall()
 
 
