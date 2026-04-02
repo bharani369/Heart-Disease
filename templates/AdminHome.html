@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<a href="/AdminHome" class="nav-link" style="color: var(--primary-color)"><i class="fa-solid fa-house-user"></i> Admin Dashboard</a>
+<a href="/AdminQinfo" class="nav-link"><i class="fa-solid fa-users-viewfinder"></i> Query History</a>
+<a href="/UploadDataset" class="nav-link"><i class="fa-solid fa-file-csv"></i> Train Model</a>
+<a href="/" class="nav-link btn-register" style="background: var(--danger-color); box-shadow: none;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+{% endblock %}
+
+{% block content %}
+<div class="glass-panel large">
+    <h2 class="panel-title">Registered Users</h2>
+    <div class="modern-table-container">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Email Address</th>
+                    <th>Phone</th>
+                    <th>Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td><strong>{{item[1]}}</strong></td>
+                    <td>{{item[2]}}</td>
+                    <td>{{item[3]}}</td>
+                    <td>{{item[4]}}</td>
+                    <td><span class="badge badge-warning">{{item[7]}}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

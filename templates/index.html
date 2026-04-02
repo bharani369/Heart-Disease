@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<a href="/" class="nav-link" style="color: var(--primary-color)"><i class="fa-solid fa-house"></i> Home</a>
+<a href="/AdminLogin" class="nav-link"><i class="fa-solid fa-user-shield"></i> Admin Login</a>
+<a href="/UserLogin" class="nav-link"><i class="fa-solid fa-user"></i> User Login</a>
+<a href="/NewUser" class="nav-link btn-register"><i class="fa-solid fa-user-plus"></i> Register</a>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1 class="hero-title glow-text" style="font-size: clamp(2.5rem, 5vw, 3.5rem);">AI-Based Heart Disease<br>Prediction System<br>Using Machine Learning</h1>
+    <p class="hero-subtitle">Enter your medical parameters into our advanced machine learning algorithm for an instant, highly accurate risk assessment based on the latest models.</p>
+    
+    <div class="dashboard-grid" style="justify-content: center; max-width: 800px; margin: 0 auto;">
+        <a href="/UserLogin" class="dash-card">
+            <div class="dash-icon"><i class="fa-solid fa-stethoscope"></i></div>
+            <h3>Patient Predictor</h3>
+            <p style="color: var(--text-light); font-size: 0.9rem;">Login as a user to input your data and get an instant assessment.</p>
+            <span class="btn-primary" style="margin-top: 1rem;">Get Started</span>
+        </a>
+        <a href="/AdminLogin" class="dash-card">
+            <div class="dash-icon"><i class="fa-solid fa-clipboard-user"></i></div>
+            <h3>Admin Portal</h3>
+            <p style="color: var(--text-light); font-size: 0.9rem;">Access the administrative portal and oversee prediction models.</p>
+            <span class="btn-primary btn-outline" style="margin-top: 1rem;">Admin Access</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

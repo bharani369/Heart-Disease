@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+<a href="/AdminLogin" class="nav-link" style="color: var(--primary-color)"><i class="fa-solid fa-user-shield"></i> Admin Login</a>
+<a href="/UserLogin" class="nav-link"><i class="fa-solid fa-user"></i> User Login</a>
+<a href="/NewUser" class="nav-link btn-register"><i class="fa-solid fa-user-plus"></i> Register</a>
+{% endblock %}
+
+{% block content %}
+<div class="glass-panel">
+    <h2 class="panel-title">Admin Login</h2>
+    <form name="form1" method="post" action="/adminlogin" class="modern-form">
+        <div class="form-group">
+            <label for="uname">Admin Username</label>
+            <input type="text" name="uname" id="uname" class="form-control" required placeholder="Enter admin username" />
+        </div>
+        <div class="form-group">
+            <label for="password">Admin Password</label>
+            <input type="password" name="password" id="password" class="form-control" required placeholder="Enter admin password" />
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+            <input type="submit" name="bnt" id="bnt" class="btn-primary" value="Secure Login" />
+            <input type="reset" name="Reset" class="btn-primary btn-outline" value="Clear" />
+        </div>
+    </form>
+</div>
+{% endblock %}

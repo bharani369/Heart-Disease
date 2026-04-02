@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<a href="/UserHome" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
+<a href="/NewQuery1" class="nav-link"><i class="fa-solid fa-heart-pulse"></i> Predict Risk</a>
+<a href="/UQueryandAns" class="nav-link" style="color: var(--primary-color)"><i class="fa-solid fa-notes-medical"></i> History</a>
+<a href="/" class="nav-link btn-register" style="background: var(--danger-color); box-shadow: none;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+{% endblock %}
+
+{% block content %}
+<div class="glass-panel large" style="max-width: 100%;">
+    <h2 class="panel-title">Your Heart Disease Results History</h2>
+    <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">Here is the detailed track record of all your clinical parameter predictions.</p>
+
+    <div class="modern-table-container">
+        <table class="modern-table" style="white-space: nowrap; font-size: 0.85rem;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Chest Pain</th>
+                    <th>Resting BP</th>
+                    <th>Cholesterol</th>
+                    <th>Fasting BS</th>
+                    <th>Resting ECG</th>
+                    <th>Max HR</th>
+                    <th>Exe. Angina</th>
+                    <th>Oldpeak</th>
+                    <th>ST Slope</th>
+                    <th>MRI</th>
+                    <th>CT Scan</th>
+                    <th>Echo</th>
+                    <th>X-ray</th>
+                    <th>Smoking</th>
+                    <th>Troponin</th>
+                    <th>Blockage %</th>
+                    <th>Result</th>
+                    <th>Prescription</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data %}
+                <tr>
+                    <td>{{item[0]}}</td>
+                    <td><strong>{{item[1]}}</strong></td>
+                    <td>{{item[2]}}</td>
+                    <td>{{item[3]}}</td>
+                    <td>{{item[4]}}</td>
+                    <td>{{item[5]}}</td>
+                    <td>{{item[6]}}</td>
+                    <td>{{item[7]}}</td>
+                    <td>{{item[8]}}</td>
+                    <td>{{item[9]}}</td>
+                    <td>{{item[10]}}</td>
+                    <td>{{item[11]}}</td>
+                    <td>{{item[12]}}</td>
+                    <td>{{item[13]}}</td>
+                    <td>{{item[14]}}</td>
+                    <td>{{item[15]}}</td>
+                    <td>{{item[16]}}</td>
+                    <td>{{item[17]}}</td>
+                    <td>{{item[18]}}</td>
+                    <td>{{item[19]}}</td>
+                    <td>
+                        {% if item[20] == 'Normal' %}
+                            <span class="badge badge-safe"><i class="fa-solid fa-check"></i> {{item[20]}}</span>
+                        {% else %}
+                            <span class="badge badge-risk"><i class="fa-solid fa-triangle-exclamation"></i> {{item[20]}}</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge" style="background: rgba(79, 70, 229, 0.1); color: var(--primary-color);">{{item[21]}}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel large animate-fade-in" style="max-width: 1200px; margin: 0 auto; padding: 3rem;">
+    <!-- Header Section -->
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 class="panel-title" style="font-size: 3rem; margin-bottom: 1rem; color: #1f2937;">About Our Project</h1>
+        <p style="font-size: 1.25rem; color: var(--primary-color); font-weight: 600;">AI-Based Heart Disease Prediction System using Machine Learning</p>
+    </div>
+
+    <!-- Project Description -->
+    <div class="glass-panel" style="background: rgba(255, 255, 255, 0.7); box-shadow: none; border-left: 4px solid var(--primary-color); padding: 2rem; margin-bottom: 3rem; line-height: 1.8; font-size: 1.1rem; color: #4b5563;">
+        <p>This project is a Machine Learning-based web application designed to predict heart disease using trained models. It leverages advanced algorithms and user-friendly interfaces to provide accurate health insights. The system is built using modern web technologies and integrated with a robust backend and database to handle real-world clinical data with high precision.</p>
+    </div>
+
+    <!-- Team Section -->
+    <h2 style="text-align: center; font-size: 2.2rem; margin-bottom: 2.5rem; font-weight: 700;">
+        <span style="color: #1f2937;">Meet the</span> <span style="color: var(--primary-color);">Team</span>
+    </h2>
+    
+    <div class="team-grid">
+        <!-- Bharanidharan P -->
+        <div class="team-card">
+            <div class="team-avatar">
+                <i class="fa-solid fa-laptop-code"></i>
+            </div>
+            <h3 class="team-name">Bharanidharan P</h3>
+            <p class="team-role">Frontend Developer</p>
+            <div class="team-skills">
+                <span class="skill-badge">HTML</span>
+                <span class="skill-badge">CSS</span>
+                <span class="skill-badge">JavaScript</span>
+                <span class="skill-badge">TypeScript</span>
+            </div>
+            <p class="team-contrib">Designed and developed the user interface and ensured smooth user experience across the glassmorphism layouts.</p>
+
+        </div>
+
+        <!-- Gowtham S -->
+        <div class="team-card">
+            <div class="team-avatar">
+                <i class="fa-solid fa-server"></i>
+            </div>
+            <h3 class="team-name">Gowtham S</h3>
+            <p class="team-role">Backend Developer</p>
+            <div class="team-skills">
+                <span class="skill-badge">Python</span>
+                <span class="skill-badge">Flask</span>
+            </div>
+            <p class="team-contrib">Managed backend logic, API development, route security, and complex server-side integration handling.</p>
+
+        </div>
+
+        <!-- Devanesh R -->
+        <div class="team-card">
+            <div class="team-avatar">
+                <i class="fa-solid fa-database"></i>
+            </div>
+            <h3 class="team-name">Devanesh R</h3>
+            <p class="team-role">Database Manager</p>
+            <div class="team-skills">
+                <span class="skill-badge">SQL</span>
+            </div>
+            <p class="team-contrib">Designed and maintained the relational database infrastructure securely and handled robust data retention.</p>
+
+        </div>
+
+        <!-- Ramkumar D -->
+        <div class="team-card">
+            <div class="team-avatar">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <h3 class="team-name">Ramkumar D</h3>
+            <p class="team-role">Machine Learning Engineer</p>
+            <div class="team-skills">
+                <span class="skill-badge">Machine Learning</span>
+                <span class="skill-badge">Model Training</span>
+            </div>
+            <p class="team-contrib">Built and extensively trained Random Forest ML models for high-accuracy cardiovascular risk prediction.</p>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

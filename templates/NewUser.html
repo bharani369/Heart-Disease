@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+<a href="/AdminLogin" class="nav-link"><i class="fa-solid fa-user-shield"></i> Admin Login</a>
+<a href="/UserLogin" class="nav-link"><i class="fa-solid fa-user"></i> User Login</a>
+<a href="/NewUser" class="nav-link btn-register"><i class="fa-solid fa-user-plus"></i> Register</a>
+{% endblock %}
+
+{% block content %}
+<div class="glass-panel large">
+    <h2 class="panel-title">Register New Account</h2>
+    <form name="form1" method="post" action="/reg" class="modern-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" name="name" id="name" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" name="age" id="age" class="form-control" required />
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" name="email" id="email" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" name="phone" id="phone" class="form-control" required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Full Address</label>
+            <input type="text" name="address" id="address" class="form-control" required />
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="zip">Zip / Area Code</label>
+                <input type="text" name="zip" id="zip" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="uname">Choose a Username</label>
+                <input type="text" name="uname" id="uname" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="psw">Password</label>
+                <input type="password" name="psw" id="psw" class="form-control" required />
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 1rem; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; flex-wrap: wrap;">
+            <input type="submit" name="Submit" class="btn-primary" value="Register Now" />
+            <input type="reset" name="Reset" class="btn-primary btn-outline" value="Reset Form" />
+        </div>
+    </form>
+</div>
+{% endblock %}

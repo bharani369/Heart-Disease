@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-panel large">
+    <h2 class="panel-title">Data Output</h2>
+    <div style="background: white; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;">
+        {{ data | safe }}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+<a href="/AdminLogin" class="nav-link"><i class="fa-solid fa-user-shield"></i> Admin Login</a>
+<a href="/UserLogin" class="nav-link" style="color: var(--primary-color)"><i class="fa-solid fa-user"></i> User Login</a>
+<a href="/NewUser" class="nav-link btn-register"><i class="fa-solid fa-user-plus"></i> Register</a>
+{% endblock %}
+
+{% block content %}
+<div class="glass-panel">
+    <h2 class="panel-title">User Login</h2>
+    <form name="form1" method="post" action="/userlogin" class="modern-form">
+        <div class="form-group">
+            <label for="uname">Username</label>
+            <input type="text" name="uname" id="uname" class="form-control" required placeholder="Enter your username" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" class="form-control" required placeholder="Enter your password" />
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+            <input type="submit" name="bnt" id="bnt" class="btn-primary" value="Login" />
+            <input type="reset" name="Reset" class="btn-primary btn-outline" value="Reset" />
+        </div>
+    </form>
+    
+    <div style="text-align: center; margin-top: 2rem;">
+        <p style="color: var(--text-light); font-size: 0.9rem;">Don't have an account? <a href="/NewUser" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Register here</a></p>
+    </div>
+</div>
+{% endblock %}

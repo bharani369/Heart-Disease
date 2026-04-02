@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Modern CSS -->
+    <link rel="stylesheet" href="/static/css/modern.css">
+</head>
+<body>
+    
+    <!-- Background Elements -->
+    <!-- 3D Custom Asset floating in the background -->
+    <img src="/static/images/background_body.png" alt="3D Human Body Details" style="position: fixed; right: 5%; top: 15%; width: 450px; max-width: 90vw; z-index: -1; opacity: 0.85; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15)); animation: float 8s infinite ease-in-out alternate; pointer-events: none;">
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="modern-navbar">
+            <div class="nav-container">
+                <a href="/" class="nav-brand">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>HeartPredict</span>
+                </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" id="mobileMenuBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="nav-links" id="navLinks">
+                    <a href="/about" class="nav-link"><i class="fa-solid fa-circle-info"></i> About Us</a>
+                    {% block navbar %}
+                    <!-- Default Guest Navbar -->
+                    <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+                    <a href="/AdminLogin" class="nav-link"><i class="fa-solid fa-user-shield"></i> Admin Login</a>
+                    <a href="/UserLogin" class="nav-link"><i class="fa-solid fa-user"></i> User Login</a>
+                    <a href="/NewUser" class="nav-link btn-register"><i class="fa-solid fa-user-plus"></i> Register</a>
+                    {% endblock %}
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="modern-footer">
+            <div class="footer-content">
+                <p>&copy; 2026 HeartPredictAI. Professional Heart Disease Prediction System.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

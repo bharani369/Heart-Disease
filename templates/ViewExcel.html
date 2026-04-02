@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+<a href="/AdminHome" class="nav-link"><i class="fa-solid fa-house-user"></i> Admin Dashboard</a>
+<a href="/AdminQinfo" class="nav-link"><i class="fa-solid fa-users-viewfinder"></i> Query History</a>
+<a href="/UploadDataset" class="nav-link" style="color: var(--primary-color)"><i class="fa-solid fa-file-csv"></i> Train Model</a>
+<a href="/" class="nav-link btn-register" style="background: var(--danger-color); box-shadow: none;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+{% endblock %}
+
+{% block content %}
+<div class="glass-panel" style="max-width: 800px;">
+    <h2 class="panel-title">Train Machine Learning Model</h2>
+    <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">Upload a refined clinical dataset (.csv) to update the Random Forest algorithm parameters. The system will automatically parse and retrain the classification pipeline.</p>
+
+    <form name="form1" method="post" enctype="multipart/form-data" action="/excelpost" class="modern-form">
+        
+        <div class="form-group" style="background: rgba(79, 70, 229, 0.05); padding: 2rem; border-radius: 1rem; border: 2px dashed var(--primary-color); text-align: center; margin-bottom: 1rem;">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem; display: block;"></i>
+            <label for="fileupload" style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.5rem; cursor: pointer;">
+                <strong>Choose CSV Dataset</strong> or drag it here
+            </label>
+            <input type="file" name="fileupload" id="fileupload" style="margin: 1rem auto; display: block; background: white; padding: 0.5rem; border-radius: 0.5rem;" required />
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <input type="submit" name="btn" id="btn" class="btn-primary" value="Upload & Train Framework" style="width: auto; padding: 1rem 2rem;" />
+        </div>
+        
+        {% if dataimg %}
+        <div style="margin-top: 2rem; text-align: center; padding-top: 2rem; border-top: 1px solid var(--glass-border);">
+            <h4 style="margin-bottom: 1rem; color: var(--text-main);">Training Evaluation Results</h4>
+            <img src="{{ dataimg }}" alt="Training Accuracy Plot" style="max-width: 100%; border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);" />
+            
+            {% if data %}
+            <div style="margin-top: 1rem; text-align: left; background: white; padding: 1rem; border-radius: 0.5rem; overflow-x: auto;">
+                {{ data | safe }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
