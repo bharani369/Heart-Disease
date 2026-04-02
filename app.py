@@ -160,108 +160,119 @@ def userlogin():
 
 @app.route("/newquery", methods=['GET', 'POST'])
 def newquery():
+    if request.method == 'GET':
+        return redirect('/NewQuery1')
+        
     if request.method == 'POST':
-
-        uname = session['uname']
-
-        # Load model + columns
-        model = joblib.load('heart_model.pkl')
-        columns = joblib.load('columns.pkl')
-
-        # 🔥 KEEP ORIGINAL VALUES (NO MANUAL ENCODING)
-        features = {
-            'Age': int(request.form['Age']),
-            'Sex': request.form['Sex'],
-            'ChestPainType': request.form['ChestPainType'],
-            'RestingBP': int(request.form['RestingBP']),
-            'Cholesterol': int(request.form['Cholesterol']),
-            'FastingBS': int(request.form['FastingBS']),
-            'RestingECG': request.form['RestingECG'],
-            'MaxHR': int(request.form['MaxHR']),
-            'ExerciseAngina': request.form['ExerciseAngina'],
-            'Oldpeak': float(request.form['Oldpeak']),
-            'ST_Slope': request.form['ST_Slope'],
-            'HeartMRI': int(request.form['HeartMRI']),
-            'CTScan': int(request.form['CTScan']),
-            'Echocardiogram': int(request.form['Echocardiogram']),
-            'ChestXray': int(request.form['ChestXray']),
-            'Smoking': request.form['Smoking'],
-            'Troponin': float(request.form['Troponin']),
-            'Angio_Blockage_Percent': float(request.form['Angio_Blockage_Percent'])
-        }
-
-        # 🔥 Convert to DataFrame
-        input_df = pd.DataFrame([features])
-
-        # 🔥 SAME encoding as training
-        input_df = pd.get_dummies(input_df)
-
-        # 🔥 Align columns
-        input_df = input_df.reindex(columns=columns, fill_value=0)
-
-        # 🔥 Prediction
-        prediction = model.predict(input_df)[0]
-        prob = model.predict_proba(input_df)[0][1]
-
-        # 🔥 Risk based on probability (BEST)
-        if prob > 0.75:
-            risk_level = " High Risk"
-        elif prob > 0.45:
-            risk_level = " Moderate Risk"
-        else:
-            risk_level = " Low Risk"
-
-        print("Prediction:", prediction)
-        print("Probability:", prob)
-
-        # ✅ Store in DB (same as before)
         try:
-            conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-            cursor = conn.cursor()
+            uname = session['uname']
 
-            cursor.execute("""
-                INSERT INTO Querytb1 
-                (UserName, Age, Sex, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG,
-                MaxHR, ExerciseAngina, Oldpeak, ST_Slope, HeartMRI, CTScan, Echocardiogram, ChestXray,
-                Smoking, Troponin, Angio_Blockage_Percent, Answer, Prescription)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (
-                uname,
-                features['Age'],
-                features['Sex'],
-                features['ChestPainType'],
-                features['RestingBP'],
-                features['Cholesterol'],
-                features['FastingBS'],
-                features['RestingECG'],
-                features['MaxHR'],
-                features['ExerciseAngina'],
-                features['Oldpeak'],
-                features['ST_Slope'],
-                features['HeartMRI'],
-                features['CTScan'],
-                features['Echocardiogram'],
-                features['ChestXray'],
-                features['Smoking'],
-                features['Troponin'],
-                features['Angio_Blockage_Percent'],
-                risk_level,
-                'Consult Cardiologist Immediately' if prediction == 1 else 'Normal Checkup'
-            ))
+            # Load model + columns
+            model = joblib.load('heart_model.pkl')
+            columns = joblib.load('columns.pkl')
 
-            conn.commit()
-            conn.close()
+            # 🔥 KEEP ORIGINAL VALUES (NO MANUAL ENCODING)
+            features = {
+                'Age': int(request.form['Age']),
+                'Sex': request.form['Sex'],
+                'ChestPainType': request.form['ChestPainType'],
+                'RestingBP': int(request.form['RestingBP']),
+                'Cholesterol': int(request.form['Cholesterol']),
+                'FastingBS': int(request.form['FastingBS']),
+                'RestingECG': request.form['RestingECG'],
+                'MaxHR': int(request.form['MaxHR']),
+                'ExerciseAngina': request.form['ExerciseAngina'],
+                'Oldpeak': float(request.form['Oldpeak']),
+                'ST_Slope': request.form['ST_Slope'],
+                'HeartMRI': int(request.form['HeartMRI']),
+                'CTScan': int(request.form['CTScan']),
+                'Echocardiogram': int(request.form['Echocardiogram']),
+                'ChestXray': int(request.form['ChestXray']),
+                'Smoking': request.form['Smoking'],
+                'Troponin': float(request.form['Troponin']),
+                'Angio_Blockage_Percent': float(request.form['Angio_Blockage_Percent'])
+            }
 
+            # 🔥 Convert to DataFrame
+            input_df = pd.DataFrame([features])
+
+            # 🔥 SAME encoding as training
+            input_df = pd.get_dummies(input_df)
+
+            # 🔥 Align columns
+            input_df = input_df.reindex(columns=columns, fill_value=0)
+
+            # 🔥 Prediction
+            prediction = model.predict(input_df)[0]
+            prob = model.predict_proba(input_df)[0][1]
+
+            # 🔥 Risk based on probability (BEST)
+            if prob > 0.75:
+                risk_level = " High Risk"
+            elif prob > 0.45:
+                risk_level = " Moderate Risk"
+            else:
+                risk_level = " Low Risk"
+
+            print("Prediction:", prediction)
+            print("Probability:", prob)
+
+            # ✅ Store in DB (same as before)
+            try:
+                pstr = os.environ.get('DB_PORT', '26205').strip()
+                db_p = int(pstr) if pstr else 26205
+                conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=db_p, connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+                cursor = conn.cursor()
+
+                cursor.execute("""
+                    INSERT INTO Querytb1 
+                    (UserName, Age, Sex, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG,
+                    MaxHR, ExerciseAngina, Oldpeak, ST_Slope, HeartMRI, CTScan, Echocardiogram, ChestXray,
+                    Smoking, Troponin, Angio_Blockage_Percent, Answer, Prescription)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    uname,
+                    features['Age'],
+                    features['Sex'],
+                    features['ChestPainType'],
+                    features['RestingBP'],
+                    features['Cholesterol'],
+                    features['FastingBS'],
+                    features['RestingECG'],
+                    features['MaxHR'],
+                    features['ExerciseAngina'],
+                    features['Oldpeak'],
+                    features['ST_Slope'],
+                    features['HeartMRI'],
+                    features['CTScan'],
+                    features['Echocardiogram'],
+                    features['ChestXray'],
+                    features['Smoking'],
+                    features['Troponin'],
+                    features['Angio_Blockage_Percent'],
+                    risk_level,
+                    'Consult Cardiologist Immediately' if prediction == 1 else 'Normal Checkup'
+                ))
+
+                conn.commit()
+                conn.close()
+
+            except Exception as e:
+                print("Database Insert Error:", e)
+
+            # Fetch user data
+            pstr2 = os.environ.get('DB_PORT', '26205').strip()
+            db_p2 = int(pstr2) if pstr2 else 26205
+            conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=db_p2, connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM Querytb1 WHERE UserName=%s", (uname,))
+            data = cur.fetchall()
+
+            return render_template('UserQueryInfo.html', data=data)
+            
         except Exception as e:
-            print("Database Insert Error:", e)
-
-        # Fetch user data
-        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM Querytb1 WHERE UserName=%s", (uname,))
-        data = cur.fetchall()
-
-        return render_template('UserQueryInfo.html', data=data)
+            import traceback
+            return f"<h2>Prediction Engine Error</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
 @app.route("/UQueryandAns")
 def UQueryandAns():
 
