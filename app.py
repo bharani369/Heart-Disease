@@ -374,115 +374,117 @@ def AdminAinfo():
 @app.route("/excelpost", methods=['GET', 'POST'])
 def uploadassign():
     if request.method == 'POST':
-
-
-        file = request.files['fileupload']
-        import pandas as pd
-        import matplotlib
-        matplotlib.use('Agg')
-        import matplotlib.pyplot as plt
-
-        if not file or file.filename == '':
-            return "No file selected! Please select a valid .csv dataset."
-
-        file_extension = file.filename.rsplit('.', 1)[-1].lower()
-        print("Detected file extension:", file_extension)
-
-        if file_extension == 'xlsx':
-            df = pd.read_excel(file, engine='openpyxl')
-        elif file_extension == 'xls':
-            df = pd.read_excel(file)
-        elif file_extension == 'csv':
-            df = pd.read_csv(file)
-        else:
-            return "Invalid file format! Please explicitly upload a .csv, .xls, or .xlsx file."
-        
-        # Ensure df is a DataFrame
-        if not isinstance(df, pd.DataFrame) or df.empty:
-            return "Failed to parse dataset into a valid DataFrame or dataset is empty."
-
-        import seaborn as sns
-        
-        # Dynamically determine the target column for plotting (fallback to last column if named differently)
-        target_column = 'HeartDisease' if 'HeartDisease' in df.columns else df.columns[-1]
-        
-        import os
-        os.makedirs('static/images', exist_ok=True)
-        
-        plt.figure(figsize=(8, 6))
-        sns.countplot(x=target_column, data=df, label="Count")
-        plt.title(f"Target Distribution: {target_column}")
-        plt.savefig('static/images/out.jpg')
-        plt.close()
-        
-        iimg = 'static/images/out.jpg'
-        print("Feature Selection completed")
-
-        import numpy as np
-        from sklearn.model_selection import train_test_split
-        from sklearn.ensemble import RandomForestClassifier
-        from sklearn.preprocessing import LabelEncoder
-        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-        import joblib
-        import warnings
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-        warnings.filterwarnings("ignore", category=FutureWarning)
-        
-        # Load the source of truth data intended for retraining framework
-        data = pd.read_csv("heart_disease_with_troponin_angio.csv")  # Updated filename
-        print(f"Retraining Model... Dataset Shape: {data.shape}")
-        
-        # Determine internal target column for system data
-        sys_target = 'HeartDisease' if 'HeartDisease' in data.columns else data.columns[-1]
-        
-        plt.figure(figsize=(8, 6))
-        sns.countplot(x=sys_target, data=data, label="Count")
-        plt.title(f"Retraining Distribution: {sys_target}")
-        plt.savefig('static/images/out2.jpg') # save so it doesn't wait for UI modal
-        plt.close()
-
-        # Label encode categorical columns
-        categorical_cols = ['Sex', 'ChestPainType', 'RestingECG', 'ExerciseAngina', 'ST_Slope', 'HeartMRI', 'CTScan',
-                            'Echocardiogram', 'ChestXray', 'Smoking']
-        le = LabelEncoder()
-        for col in categorical_cols:
-            data[col] = le.fit_transform(data[col])
-
-        # Features and target
-        X = data.drop("HeartDisease", axis=1)
-        y = data["HeartDisease"]
-
-        # Clean NaNs and infinite values
-        X.replace([np.inf, -np.inf], np.nan, inplace=True)
-        X.dropna(inplace=True)
-        y = y[X.index]  # Align target with features
-
-        # Split data
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-        # Train model
-        model = RandomForestClassifier()
-        model.fit(X_train, y_train)
-
-        # Predict and evaluate
-        y_pred = model.predict(X_test)
-        print(f"Model Accuracy: {accuracy_score(y_test, y_pred):.2f}")
-        print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
-        print("\nClassification Report:\n", classification_report(y_test, y_pred))
-        cm = confusion_matrix(y_test, y_pred)
-
-        plt.figure(figsize=(6, 5))
-        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['No Disease', 'Disease'],
-                    yticklabels=['No Disease', 'Disease'])
-        plt.xlabel('Predicted Label')
-        plt.ylabel('True Label')
-        plt.title('Confusion Matrix')
-        plt.close()
-
-        # Save model
-        joblib.dump(model, "heart_model.pkl")
-
-        return render_template('ViewExcel.html', data=df.to_html(), dataimg=iimg)
+        try:
+            file = request.files['fileupload']
+            import pandas as pd
+            import matplotlib
+            matplotlib.use('Agg')
+            import matplotlib.pyplot as plt
+    
+            if not file or file.filename == '':
+                return "No file selected! Please select a valid .csv dataset."
+    
+            file_extension = file.filename.rsplit('.', 1)[-1].lower()
+            print("Detected file extension:", file_extension)
+    
+            if file_extension == 'xlsx':
+                df = pd.read_excel(file, engine='openpyxl')
+            elif file_extension == 'xls':
+                df = pd.read_excel(file)
+            elif file_extension == 'csv':
+                df = pd.read_csv(file)
+            else:
+                return "Invalid file format! Please explicitly upload a .csv, .xls, or .xlsx file."
+            
+            # Ensure df is a DataFrame
+            if not isinstance(df, pd.DataFrame) or df.empty:
+                return "Failed to parse dataset into a valid DataFrame or dataset is empty."
+    
+            import seaborn as sns
+            
+            # Dynamically determine the target column for plotting (fallback to last column if named differently)
+            target_column = 'HeartDisease' if 'HeartDisease' in df.columns else df.columns[-1]
+            
+            import os
+            os.makedirs('static/images', exist_ok=True)
+            
+            plt.figure(figsize=(8, 6))
+            sns.countplot(x=target_column, data=df, label="Count")
+            plt.title(f"Target Distribution: {target_column}")
+            plt.savefig('static/images/out.jpg')
+            plt.close()
+            
+            iimg = 'static/images/out.jpg'
+            print("Feature Selection completed")
+    
+            import numpy as np
+            from sklearn.model_selection import train_test_split
+            from sklearn.ensemble import RandomForestClassifier
+            from sklearn.preprocessing import LabelEncoder
+            from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+            import joblib
+            import warnings
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+            warnings.filterwarnings("ignore", category=FutureWarning)
+            
+            # Load the source of truth data intended for retraining framework
+            data = pd.read_csv("heart_disease_with_troponin_angio.csv")  # Updated filename
+            print(f"Retraining Model... Dataset Shape: {data.shape}")
+            
+            # Determine internal target column for system data
+            sys_target = 'HeartDisease' if 'HeartDisease' in data.columns else data.columns[-1]
+            
+            plt.figure(figsize=(8, 6))
+            sns.countplot(x=sys_target, data=data, label="Count")
+            plt.title(f"Retraining Distribution: {sys_target}")
+            plt.savefig('static/images/out2.jpg') # save so it doesn't wait for UI modal
+            plt.close()
+    
+            # Label encode categorical columns
+            categorical_cols = ['Sex', 'ChestPainType', 'RestingECG', 'ExerciseAngina', 'ST_Slope', 'HeartMRI', 'CTScan',
+                                'Echocardiogram', 'ChestXray', 'Smoking']
+            le = LabelEncoder()
+            for col in categorical_cols:
+                data[col] = le.fit_transform(data[col])
+    
+            # Features and target
+            X = data.drop("HeartDisease", axis=1)
+            y = data["HeartDisease"]
+    
+            # Clean NaNs and infinite values
+            X.replace([np.inf, -np.inf], np.nan, inplace=True)
+            X.dropna(inplace=True)
+            y = y[X.index]  # Align target with features
+    
+            # Split data
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+            # Train model
+            model = RandomForestClassifier()
+            model.fit(X_train, y_train)
+    
+            # Predict and evaluate
+            y_pred = model.predict(X_test)
+            print(f"Model Accuracy: {accuracy_score(y_test, y_pred):.2f}")
+            print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
+            print("\nClassification Report:\n", classification_report(y_test, y_pred))
+            cm = confusion_matrix(y_test, y_pred)
+    
+            plt.figure(figsize=(6, 5))
+            sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['No Disease', 'Disease'],
+                        yticklabels=['No Disease', 'Disease'])
+            plt.xlabel('Predicted Label')
+            plt.ylabel('True Label')
+            plt.title('Confusion Matrix')
+            plt.close()
+    
+            # Save model
+            joblib.dump(model, "heart_model.pkl")
+    
+            return render_template('ViewExcel.html', data=df.to_html(), dataimg=iimg)
+        except Exception as e:
+            import traceback
+            return f"<h2>Upload Failed Details:</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
