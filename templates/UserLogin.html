@@ -10,6 +10,11 @@
 {% block content %}
 <div class="glass-panel">
     <h2 class="panel-title">User Login</h2>
+    {% if error %}
+    <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.2);">
+        <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+    </div>
+    {% endif %}
     <form name="form1" method="post" action="/userlogin" class="modern-form">
         <div class="form-group">
             <label for="uname">Username</label>

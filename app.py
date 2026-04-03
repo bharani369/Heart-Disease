@@ -1,5 +1,10 @@
 from flask import Flask, render_template, flash, request, session
 import os
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 from flask import render_template, redirect, url_for, request
 #from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from werkzeug.utils import secure_filename
@@ -76,13 +81,14 @@ def adminlogin():
         return redirect('/AdminLogin')
     
     if request.method == 'POST':
+       conn = None
+       cursor = None
        try:
-           if request.form['uname'] == 'admin' or request.form['password'] == 'admin':
+           if request.form['uname'] == 'admin' and request.form['password'] == 'admin':
                conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
                cursor = conn.cursor()
-               cur = conn.cursor()
-               cur.execute("SELECT * FROM register")
-               data = cur.fetchall()
+               cursor.execute("SELECT * FROM register")
+               data = cursor.fetchall()
                return render_template('AdminHome.html', data=data)
     
            else:
@@ -91,9 +97,9 @@ def adminlogin():
                <html>
                <head><title>Access Denied</title></head>
                <body style="text-align: center; font-family: sans-serif; padding-top: 100px; background: #f3f4f6;">
-                   <script>alert('only admin login only allowed !');</script>
+                   <script>alert('Invalid admin credentials!');</script>
                    <h2 style="color: #ef4444;">Access Denied</h2>
-                   <p>only admin login only allowed ! Please verify your credentials and try again.</p>
+                   <p>Invalid admin credentials! Please verify your credentials and try again.</p>
                    <a href="/AdminLogin" style="display: inline-block; padding: 10px 20px; background: #4f46e5; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">Return to Admin Portal</a>
                </body>
                </html>
@@ -101,25 +107,42 @@ def adminlogin():
        except Exception as e:
            import traceback
            return f"<h2>Backend Error</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
+       finally:
+           if cursor is not None:
+               cursor.close()
+           if conn is not None and conn.is_connected():
+               conn.close()
 
 @app.route("/reg", methods=['GET', 'POST'])
 def reg():
     if request.method == 'POST':
-        n = request.form['name']
-
-        address = request.form['address']
-        age = request.form['age']
-        pnumber = request.form['phone']
-        email = request.form['email']
-        zip = request.form['zip']
-        uname = request.form['uname']
-        password = request.form['psw']
-        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO register VALUES ('','" + n + "','" + age + "','" + email + "','" + pnumber + "','" + zip + "','" + address + "','" + uname + "','" + password + "')")
-        conn.commit()
-        conn.close()
+        conn = None
+        cursor = None
+        try:
+            n = request.form['name']
+            address = request.form['address']
+            age = request.form['age']
+            pnumber = request.form['phone']
+            email = request.form['email']
+            zip = request.form['zip']
+            uname = request.form['uname']
+            password = request.form['psw']
+            
+            conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO register VALUES ('', %s, %s, %s, %s, %s, %s, %s, %s)",
+                (n, age, email, pnumber, zip, address, uname, password)
+            )
+            conn.commit()
+        except Exception as e:
+            return f"<h2>Error registering</h2><pre>{str(e)}</pre>"
+        finally:
+            if cursor is not None:
+                cursor.close()
+            if conn is not None and conn.is_connected():
+                conn.close()
+                
         return """
         <!DOCTYPE html>
         <html>
@@ -135,28 +158,42 @@ def reg():
 @app.route("/userlogin", methods=['GET', 'POST'])
 def userlogin():
     error = None
+    if request.method == 'GET':
+        return redirect('/UserLogin')
+        
     if request.method == 'POST':
-        username = request.form['uname']
-        password = request.form['password']
-        session['uname'] = request.form['uname']
-
-        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-        cursor = conn.cursor()
-        cursor.execute("SELECT * from register where uname='" + username + "' and psw='" + password + "'")
-        data = cursor.fetchone()
-        if data is None:
-            return render_template('index.html')
-            return 'Username or Password is wrong'
-        else:
-            print(data[0])
-            session['uid'] = data[0]
+        conn = None
+        cursor = None
+        try:
+            username = request.form['uname']
+            password = request.form['password']
+            
             conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-            # cursor = conn.cursor()
-            cur = conn.cursor()
-            cur.execute("SELECT * FROM register where uname='" + username + "' and psw='" + password + "'")
-            data = cur.fetchall()
-
-            return render_template('UserHome.html', data=data )
+            cursor = conn.cursor()
+            cursor.execute("SELECT * from register where uname=%s and psw=%s", (username, password))
+            data = cursor.fetchone()
+            
+            if data is None:
+                error = 'Invalid Username or Password'
+                return render_template('UserLogin.html', error=error)
+            else:
+                session['uname'] = username
+                session['uid'] = data[0]
+                
+                cursor.execute("SELECT * FROM register where uname=%s and psw=%s", (username, password))
+                user_data = cursor.fetchall()
+                
+                return render_template('UserHome.html', data=user_data)
+        except Exception as e:
+            import traceback
+            error = f"Database error occurred: {str(e)}"
+            print(f"Login error:\n{traceback.format_exc()}")
+            return render_template('UserLogin.html', error=error)
+        finally:
+            if cursor is not None:
+                cursor.close()
+            if conn is not None and conn.is_connected():
+                conn.close()
 
 @app.route("/newquery", methods=['GET', 'POST'])
 def newquery():
@@ -264,9 +301,12 @@ def newquery():
             pstr2 = os.environ.get('DB_PORT', '26205').strip()
             db_p2 = int(pstr2) if pstr2 else 26205
             conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=db_p2, connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-            cur = conn.cursor()
-            cur.execute("SELECT * FROM querytb1 WHERE UserName=%s", (uname,))
-            data = cur.fetchall()
+            try:
+                cur = conn.cursor()
+                cur.execute("SELECT * FROM querytb1 WHERE UserName=%s", (uname,))
+                data = cur.fetchall()
+            finally:
+                conn.close()
 
             return render_template('UserQueryInfo.html', data=data)
             
@@ -275,37 +315,36 @@ def newquery():
             return f"<h2>Prediction Engine Error</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
 @app.route("/UQueryandAns")
 def UQueryandAns():
-
-    uname = session['uname']
-
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-    # cursor = conn.cursor()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM querytb1 where UserName='" + uname + "'")
-    data = cur.fetchall()
-
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-    # cursor = conn.cursor()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM querytb1 where UserName='" + uname + "'")
-    data1 = cur.fetchall()
-
-
-    return render_template('UserQueryInfo.html', wait=data, answ=data1 )
+    conn = None
+    try:
+        uname = session['uname']
+        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM querytb1 where UserName=%s", (uname,))
+        data = cur.fetchall()
+        return render_template('UserQueryInfo.html', wait=data, answ=data)
+    except Exception as e:
+        import traceback
+        return f"<h2>Database Error</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
+    finally:
+        if conn is not None and conn.is_connected():
+            conn.close()
 
 @app.route("/AdminQinfo")
 def AdminQinfo():
-
-    #uname = session['uname']
-
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-    # cursor = conn.cursor()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM querytb1")
-    data = cur.fetchall()
-
-
-    return render_template('AdminAnswer.html', data=data )
+    conn = None
+    try:
+        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM querytb1")
+        data = cur.fetchall()
+        return render_template('AdminAnswer.html', data=data)
+    except Exception as e:
+        import traceback
+        return f"<h2>Database Error</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
+    finally:
+        if conn is not None and conn.is_connected():
+            conn.close()
 
 
 
@@ -315,17 +354,19 @@ def AdminQinfo():
 
 @app.route("/AdminAinfo")
 def AdminAinfo():
-
-
-
-    conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
-    # cursor = conn.cursor()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM querytb1 where  DResult !='waiting'")
-    data = cur.fetchall()
-
-
-    return render_template('AdminAnswer.html', data=data )
+    conn = None
+    try:
+        conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM querytb1 where DResult !='waiting'")
+        data = cur.fetchall()
+        return render_template('AdminAnswer.html', data=data)
+    except Exception as e:
+        import traceback
+        return f"<h2>Database Error</h2><pre>{str(e)}<br><br>{traceback.format_exc()}</pre>"
+    finally:
+        if conn is not None and conn.is_connected():
+            conn.close()
 
 
 
