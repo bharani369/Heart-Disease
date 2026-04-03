@@ -131,7 +131,7 @@ def reg():
             conn = mysql.connector.connect(user=os.environ.get('DB_USER', 'root'), password=os.environ.get('DB_PASS', ''), host=os.environ.get('DB_HOST', 'localhost'), port=int(os.environ.get('DB_PORT', 26205)), connection_timeout=5, database=os.environ.get('DB_NAME', '1heartdb'), use_pure=True, charset='utf8')
             cursor = conn.cursor()
             cursor.execute(
-                "INSERT INTO register VALUES ('', %s, %s, %s, %s, %s, %s, %s, %s)",
+                "INSERT INTO register VALUES (NULL, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (n, age, email, pnumber, zip, address, uname, password)
             )
             conn.commit()
