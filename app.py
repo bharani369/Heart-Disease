@@ -378,6 +378,8 @@ def uploadassign():
 
         file = request.files['fileupload']
         import pandas as pd
+        import matplotlib
+        matplotlib.use('Agg')
         import matplotlib.pyplot as plt
 
         if not file or file.filename == '':
@@ -403,6 +405,9 @@ def uploadassign():
         
         # Dynamically determine the target column for plotting (fallback to last column if named differently)
         target_column = 'HeartDisease' if 'HeartDisease' in df.columns else df.columns[-1]
+        
+        import os
+        os.makedirs('static/images', exist_ok=True)
         
         plt.figure(figsize=(8, 6))
         sns.countplot(x=target_column, data=df, label="Count")
@@ -472,7 +477,7 @@ def uploadassign():
         plt.xlabel('Predicted Label')
         plt.ylabel('True Label')
         plt.title('Confusion Matrix')
-        plt.show()
+        plt.close()
 
         # Save model
         joblib.dump(model, "heart_model.pkl")
